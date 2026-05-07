@@ -1,0 +1,119 @@
+
+\documentclass[letterpaper,11pt]{article}
+
+%% Packages
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{setspace}
+
+%% Page setup
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1.0in}
+\setlength{\footskip}{5pt}
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+%% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%% Custom commands (from Resume-Builder-TeX template)
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-2pt}}
+}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+  \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & #2 \\
+    \textit{\small#3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+  \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+    \small#1 & #2 \\
+  \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeSkillHeading}[2]{
+  \vspace{-2pt}\item
+  {\textbf{\small#1}}{: \small#2}
+}
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+%% Header
+\begin{center}
+  {\Huge \textbf{Rushil Cv}} \\[4pt]
+  \small +91-8008527903 $|$ \href{mailto:rushil.cv26@gmail.com}{rushil.cv26@gmail.com} $|$ \href{linkedin.com/in/rushilcv}{linkedin.com/in/rushilcv} $|$ \href{github.com/Rushil242}{github.com/Rushil242} $|$ Bengaluru
+\end{center}
+
+%% Sections
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading{BMSIT\&M - Bengaluru, Karnataka Bachelor of Engineering – Artificial Intelligence \& Machine Learning}{}{}{}
+\resumeSubHeadingListEnd
+
+\section{Projects}
+\resumeSubHeadingListStart
+  \resumeProjectHeading{\textbf{Cross-Modal Retail Forecasting System §}}{}
+  \resumeItemListStart
+    \resumeItem{Developed a robust prediction model leveraging Time-Series Foundation Models (TSFM) to forecast multi-chain}
+  \resumeItemListEnd
+  \resumeProjectHeading{\textbf{retail outlet sales}}{}
+  \resumeItemListStart
+    \resumeItem{Implemented an NLP-powered social media trend system to analyze public sentiment, providing actionable recom-}
+  \resumeItemListEnd
+  \resumeProjectHeading{\textbf{mendations for optimal stock and logistics routing}}{}
+  \resumeProjectHeading{\textbf{City Electricity Demand Forecasting §}}{}
+  \resumeItemListStart
+    \resumeItem{Developed fusion model (XGBoost + LSTM) to predict electricity usage demand from historical data}
+    \resumeItem{Built interactive dashboard for electricity department to visualize predictions and optimize resource allocation}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Certifications}
+SupervisedMachineLearning: Regression\&Classification–DeepLearning.AI,Stanford Verify: EJ0EKXU7YRII
+Python for Data Science, AI \& Development – IBM Verify: B685MIKHEEUK
+
+\section{Skills}
+\resumeSubHeadingListStart
+  \resumeSkillHeading{Languages \& Frameworks}{Python, Java, C, TensorFlow, Scikit-learn, Flask, Pandas, NumPy}
+  \resumeSkillHeading{Tools, Platforms \& ML/AI}{Git, GitHub, Google Cloud Platform, LSTM, XGBoost, K-means}
+\resumeSubHeadingListEnd
+
+\section{Experience}
+\resumeSubHeadingListStart
+  \resumeSubheading{Freelance AI Solutions Developer Jul 2025 – Aug 2025}{}{}{}
+  \resumeSubheading{MNP Software Solutions}{}{}{}
+  \resumeItemListStart
+    \resumeItem{Provisioned WhatsApp Business API environment, integrating with client’s business systems}
+    \resumeItem{Designed automated campaign workflows for bulk broadcasts and customer-support replies}
+    \resumeItem{Built AI-based job-search automation pipeline with daily job postings and email reports}
+    \resumeItem{Achieved 30\% operational efficiency improvement and 35\% increase in engagement rate}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\end{document}
