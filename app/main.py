@@ -1,14 +1,13 @@
-
 import os
 import shutil
 import uuid
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from typing import Optional
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from app.config import settings  # makedirs happen inside config.py now
+from app.config import settings
 from app.resume_service import analyze_resume, tailor_resume
-from typing import Optional 
 
 app = FastAPI(title="Resume ATS Tailor API", version="1.0.0")
 
@@ -36,7 +35,7 @@ def root():
 @app.post("/api/resume/analyze")
 async def api_analyze_resume(
     resume_file: UploadFile = File(..., description="Resume PDF or DOCX"),
-    screenshot: UploadFile | None = File(None, description="Optional screenshot PNG/JPG"),
+    screenshot: Optional[UploadFile] = File(default=None, description="Optional screenshot PNG/JPG"),
 ):
     ext = os.path.splitext(resume_file.filename or "")[-1].lower()
     if ext not in {".pdf", ".docx"}:
@@ -47,7 +46,7 @@ async def api_analyze_resume(
         shutil.copyfileobj(resume_file.file, f)
 
     image_bytes = b""
-    if screenshot:
+    if screenshot and hasattr(screenshot, "read"):
         image_bytes = await screenshot.read()
 
     try:
@@ -58,28 +57,59 @@ async def api_analyze_resume(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-  # add this at the top of main.py with other imports
-
+# ── TAILOR endpoint — jd_file intentionally removed from multipart.
+# Swagger sends empty string "" for unused optional file fields, which crashes
+# FastAPI's UploadFile validator regardless of Optional annotation (known FastAPI bug
+# with multipart + empty binary fields). Solution: accept only jd_text as Form field.
+# If you need file upload, use a separate dedicated endpoint below.
 @app.post("/api/resume/{resume_id}/tailor")
 async def api_tailor_resume(
     resume_id: str,
     jd_text: str = Form(default=""),
-    jd_file: Optional[UploadFile] = File(default=None),
 ):
     text = jd_text.strip()
-    if jd_file and not text:
-        raw = await jd_file.read()
-        text = raw.decode("utf-8", errors="ignore").strip()
     if not text:
-        raise HTTPException(status_code=400, detail="Provide jd_text or upload jd_file.")
+        raise HTTPException(status_code=400, detail="jd_text is required and cannot be empty.")
 
     try:
         return tailor_resume(resume_id, text)
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=f"Resume ID not found: {e}")
     except Exception as e:
         import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Separate endpoint to upload a JD as a PDF/TXT file
+@app.post("/api/resume/{resume_id}/tailor-file")
+async def api_tailor_resume_file(
+    resume_id: str,
+    jd_file: UploadFile = File(..., description="Job description as PDF or TXT file"),
+):
+    raw = await jd_file.read()
+    # Try UTF-8 decode (works for .txt); for PDF extract text
+    filename = jd_file.filename or ""
+    if filename.lower().endswith(".pdf"):
+        import pdfplumber, io
+        text = ""
+        with pdfplumber.open(io.BytesIO(raw)) as pdf:
+            for page in pdf.pages:
+                text += (page.extract_text() or "") + "\n"
+    else:
+        text = raw.decode("utf-8", errors="ignore")
+
+    text = text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Could not extract text from uploaded JD file.")
+
+    try:
+        return tailor_resume(resume_id, text)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=f"Resume ID not found: {e}")
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/download/{filename}")
 def download_file(filename: str):
